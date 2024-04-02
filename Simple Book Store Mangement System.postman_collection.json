@@ -1,0 +1,2212 @@
+{
+	"info": {
+		"_postman_id": "5208c168-553e-4dfe-a944-05a9607d064e",
+		"name": "Simple Book Store Mangement System",
+		"description": "This API allows you to manage books in a simple book store. You can perform CRUD (Create, Read, Update, Delete) operations on books. Use the provided endpoints to interact with the system.\n\n**Endpoints:**\n\n- `GET /Books`: Retrieve all books in the store.\n- `GET /Books/{id}`: Retrieve a book by its unique ID.\n- `POST /Books`: Add a new book to the store.\n- `PUT /Books/{id}`: Update a book's information.\n- `DELETE /Books/{id}`: Delete a book by its ID.\n    \n\n**Request Examples:**\n\n1. To retrieve all books, send a GET request to `http://localhost:3000/Books`.\n2. To retrieve a specific book by ID, send a GET request to `http://localhost:3000/Books/{id}`.\n3. To add a new book, send a POST request to `http://localhost:3000/Books` with a JSON body containing book details.\n4. To update a book's information, send a PUT request to `http://localhost:3000/Books/{id}` with a JSON body containing updated book details.\n5. To delete a book by ID, send a DELETE request to `{{URL}}/Books/{id}`.\n    \n\n**Note:**\n\n- Replace `{id}` with the actual ID of the book you want to retrieve, update, or delete.\n- Ensure you have selected the appropriate environment in Postman before sending requests to the API.\n- Additional endpoints for other functionalities may be available. Explore the API documentation or consult with the API provider for more information.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32908105"
+	},
+	"item": [
+		{
+			"name": "Create Book",
+			"item": [
+				{
+					"name": "Positive Scenario",
+					"item": [
+						{
+							"name": "Add Book",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonFile = pm.response.json()\r",
+											"var BookID = jsonFile.id\r",
+											"var BookTitle = jsonFile.title\r",
+											"\r",
+											"pm.environment.set(\"BookID\",BookID)\r",
+											"pm.environment.set(\"BookTitle\",BookTitle)\r",
+											"\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 201)\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"Created\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the request body is not empty\r",
+											"pm.test(\"Request body is not empty\", function () {\r",
+											"    pm.expect(pm.request.body.toJSON()).not.eql({});\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 472 B\r",
+											"pm.test(\"Response size is within 472 B\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test by ID to verify that the book was added correctly\r",
+											"pm.test(\"Book was added successfully\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.id).to.eql(\"27\");\r",
+											"});\r",
+											"\r",
+											"//Test by title to verify that the book was added correctly\r",
+											"pm.test(\"Response body should contain book title\", function () {\r",
+											"    pm.expect(pm.response.json().title).to.eql(\"آل روتشيلد\");\r",
+											"});\r",
+											"\r",
+											"//Test to check if the book was added with the correct author\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"    pm.expect(pm.response.json().author).to.eql(\"مجدي كامل\");\r",
+											"});\r",
+											"\r",
+											"//Test to check if the book was added with the correct price\r",
+											"pm.test(\"Response body should contain correct price\", function () {\r",
+											"    pm.expect(pm.response.json().price).to.eql(200);\r",
+											"});\r",
+											"\r",
+											"//Test to verify the presence of specific keys in the response\r",
+											"pm.test(\"Response should contain necessary keys\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"id\");\r",
+											"    pm.expect(jsonData).to.have.property(\"title\");\r",
+											"    pm.expect(jsonData).to.have.property(\"author\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response follows a specific schema\r",
+											"const schema = {\r",
+											"    type: 'object',\r",
+											"    properties: {\r",
+											"        id: { type: 'string' },\r",
+											"        title: { type: 'string' },\r",
+											"        author: { type: 'string' },\r",
+											"        pageCount: { type: 'number' },\r",
+											"        publishDate: { type: 'string' },\r",
+											"        price: { type: 'number' }\r",
+											"\r",
+											"    },\r",
+											"    required: ['id', 'title', 'author', 'pageCount', 'publishDate', 'price']\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"27\",\r\n    \"title\": \"آل روتشيلد\",\r\n    \"author\": \"مجدي كامل\",\r\n    \"pageCount\": 296,\r\n    \"publishDate\": \"2017\",\r\n    \"price\":200\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative Scenario",
+					"item": [
+						{
+							"name": "Create Book (Empty Body)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonFile = pm.response.json()\r",
+											"var BookID = jsonFile.id\r",
+											"var BookTitle = jsonFile.title\r",
+											"\r",
+											"pm.environment.set(\"BookID\",BookID)\r",
+											"pm.environment.set(\"BookTitle\",BookTitle)\r",
+											"\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 400)\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Book (Duplicate)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonFile = pm.response.json()\r",
+											"var BookID = jsonFile.id\r",
+											"var BookTitle = jsonFile.title\r",
+											"\r",
+											"pm.environment.set(\"BookID\",BookID)\r",
+											"pm.environment.set(\"BookTitle\",BookTitle)\r",
+											"\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 400)\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the request body is not empty\r",
+											"pm.test(\"Request body is not empty\", function () {\r",
+											"    pm.expect(pm.request.body.toJSON()).not.eql({});\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 400ms\r",
+											"pm.test(\"Response time is less than 400ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"27\",\r\n    \"title\": \"آل روتشيلد\",\r\n    \"author\": \"مجدي كامل\",\r\n    \"pageCount\": 296,\r\n    \"publishDate\": \"2017\",\r\n    \"price\":200\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Book (ID Already Exists)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonFile = pm.response.json()\r",
+											"var BookID = jsonFile.id\r",
+											"var BookTitle = jsonFile.title\r",
+											"\r",
+											"pm.environment.set(\"BookID\",BookID)\r",
+											"pm.environment.set(\"BookTitle\",BookTitle)\r",
+											"\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 400)\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the request body is not empty\r",
+											"pm.test(\"Request body is not empty\", function () {\r",
+											"    pm.expect(pm.request.body.toJSON()).not.eql({});\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 400ms\r",
+											"pm.test(\"Response time is less than 400ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"id\": \"26\",\r\n      \"title\": \"فن اللامبالاة\",\r\n      \"author\": \"مارك مانسون\",\r\n      \"pageCount\": 224,\r\n      \"publishDate\": \"2016\",\r\n      \"price\": 22\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Book (Missing Price Value)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonFile = pm.response.json()\r",
+											"var BookID = jsonFile.id\r",
+											"var BookTitle = jsonFile.title\r",
+											"\r",
+											"pm.environment.set(\"BookID\",BookID)\r",
+											"pm.environment.set(\"BookTitle\",BookTitle)\r",
+											"\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 400)\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to ensure that the request body is not empty\r",
+											"pm.test(\"Request body is not empty\", function () {\r",
+											"    pm.expect(pm.request.body.toJSON()).not.eql({});\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"id\": \"28\",\r\n      \"title\": \"Harry Potter and the Philosopher's Stone\",\r\n      \"author\": \"J.K. Rowling\",\r\n      \"pageCount\": 223,\r\n      \"publishDate\": \"1997\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Book (Future Publish Date)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonFile = pm.response.json()\r",
+											"var BookID = jsonFile.id\r",
+											"var BookTitle = jsonFile.title\r",
+											"\r",
+											"pm.environment.set(\"BookID\",BookID)\r",
+											"pm.environment.set(\"BookTitle\",BookTitle)\r",
+											"\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 400)\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to ensure that the request body is not empty\r",
+											"pm.test(\"Request body is not empty\", function () {\r",
+											"    pm.expect(pm.request.body.toJSON()).not.eql({});\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"29\",\r\n    \"title\": \"في ممر الفئران\",\r\n    \"author\": \"أحمد خالد توفيق\",\r\n    \"pageCount\": 222,\r\n    \"publishDate\": \"2050\",\r\n    \"price\":150\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Get Book Details",
+			"item": [
+				{
+					"name": "Positive Scenario",
+					"item": [
+						{
+							"name": "Retrieve All Books",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 200\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 16 KB\r",
+											"pm.test(\"Response size is within 16 KB\", function () {\r",
+											"    var maxSizeInBytes = 16 * 1024; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the presence of specific ID in the response\r",
+											"var objectsNum = pm.response.json().length\r",
+											"var randNum = Math.floor(Math.random()*objectsNum) //0-objectsNum\r",
+											"pm.collectionVariables.set(\"activityid\", pm.response.json()[randNum].id);\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains an array of books\r",
+											"pm.test(\"Response contains an array of books\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.be.an(\"array\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve Book (By ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 200\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response follows a specific schema\r",
+											"const schema = {\r",
+											"    type: 'object',\r",
+											"    properties: {\r",
+											"        id: { type: 'string' },\r",
+											"        title: { type: 'string' },\r",
+											"        author: { type: 'string' },\r",
+											"        pageCount: { type: 'number' },\r",
+											"        publishDate: { type: 'string' },\r",
+											"        price: { type: 'number' }\r",
+											"\r",
+											"    },\r",
+											"    required: ['id', 'title', 'author', 'pageCount', 'publishDate', 'price']\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"//Test by ID to verify that the book was added correctly\r",
+											"pm.test(\"Book was added successfully\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.id).to.eql(\"29\");\r",
+											"});\r",
+											"\r",
+											"//Test by title to verify that the book was added correctly\r",
+											"pm.test(\"Response body should contain book title\", function () {\r",
+											"    pm.expect(pm.response.json().title).to.eql(\"في ممر الفئران\");\r",
+											"});\r",
+											"\r",
+											"//Test to check if the book was added with the correct author\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"    pm.expect(pm.response.json().author).to.eql(\"أحمد خالد توفيق\");\r",
+											"});\r",
+											"\r",
+											"//Test to check if the book was added with the correct price\r",
+											"pm.test(\"Response body should contain correct price\", function () {\r",
+											"    pm.expect(pm.response.json().price).to.eql(150);\r",
+											"});\r",
+											"\r",
+											"//Test to check if the book was added with the correct pageCount\r",
+											"pm.test(\"Response body should contain correct pageCount\", function () {\r",
+											"    pm.expect(pm.response.json().pageCount).to.eql(222);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/Books/{{BookID}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"{{BookID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve Book (By Title)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 200\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 1.2 KB\", function () {\r",
+											"    var maxSizeInBytes = 2*1024; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified title is present in the response\r",
+											"pm.test(\"Book with title 'The Adventures of Sherlock Holmes' should be present in the response\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData[0].title).to.eql(\"The Adventures of Sherlock Holmes\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified author is present in the response\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"    pm.expect(pm.response.json()[0].author).to.eql(\"Arthur Conan Doyle\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified publish date is present in the response\r",
+											"pm.test(\"Response body should contain correct publish date\", function () {\r",
+											"    pm.expect(pm.response.json()[0].publishDate).to.eql(\"1892\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified page count is present in the response\r",
+											"pm.test(\"Response body should contain correct page count\", function () {\r",
+											"    pm.expect(pm.response.json()[0].pageCount).to.eql(307);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified price is present in the response\r",
+											"pm.test(\"Response body should contain correct price\", function () {\r",
+											"    pm.expect(pm.response.json()[0].price).to.eql(64);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/Books?title=The Adventures of Sherlock Holmes",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "The Adventures of Sherlock Holmes"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve Book (By Author)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 200\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"// Test to ensure that the response follows a specific schema\r",
+											"const schema = {\r",
+											"    type: 'array',\r",
+											"    items: {\r",
+											"        type: 'object',\r",
+											"        properties: {\r",
+											"            id: { type: 'string' },\r",
+											"            title: { type: 'string' },\r",
+											"            author: { type: 'string' },\r",
+											"            pageCount: { type: 'number' },\r",
+											"            publishDate: { type: 'string' },\r",
+											"            price: { type: 'number' }\r",
+											"        },\r",
+											"        required: ['id', 'title', 'author', 'pageCount', 'publishDate', 'price']\r",
+											"    }\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified title is present in the response\r",
+											"pm.test(\"Book with title 'في ممر الفئران' should be present in the response\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData[0].title).to.eql(\"في ممر الفئران\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified author is present in the response\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"    pm.expect(pm.response.json()[0].author).to.eql(\"أحمد خالد توفيق\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified publish date is present in the response\r",
+											"pm.test(\"Response body should contain correct publish date\", function () {\r",
+											"    pm.expect(pm.response.json()[0].publishDate).to.eql(\"2050\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified page count is present in the response\r",
+											"pm.test(\"Response body should contain correct page count\", function () {\r",
+											"    pm.expect(pm.response.json()[0].pageCount).to.eql(222);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/Books?author={{BookAuthor}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									],
+									"query": [
+										{
+											"key": "author",
+											"value": "{{BookAuthor}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve Book (By Page Count)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 200\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"// Test to ensure that the response follows a specific schema\r",
+											"const schema = {\r",
+											"    type: 'array',\r",
+											"    items: {\r",
+											"        type: 'object',\r",
+											"        properties: {\r",
+											"            id: { type: 'string' },\r",
+											"            title: { type: 'string' },\r",
+											"            author: { type: 'string' },\r",
+											"            pageCount: { type: 'number' },\r",
+											"            publishDate: { type: 'string' },\r",
+											"            price:{type: 'number'}\r",
+											"        },\r",
+											"        required: ['id', 'title', 'author', 'pageCount', 'publishDate', 'price']\r",
+											"    }\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified title is present in the response\r",
+											"pm.test(\"Book with title 'فن اللامبالاة' should be present in the response\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData[0].title).to.eql(\"فن اللامبالاة\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified id is present in the response\r",
+											"pm.test(\"Book with ID 26 should be present in the response\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData[0].id).to.eql(\"26\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified author is present in the response\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"    pm.expect(pm.response.json()[0].author).to.eql(\"مارك مانسون\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified publish date is present in the response\r",
+											"pm.test(\"Response body should contain correct publish date\", function () {\r",
+											"    pm.expect(pm.response.json()[0].publishDate).to.eql(\"2016\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified page count is present in the response\r",
+											"pm.test(\"Response body should contain correct page count\", function () {\r",
+											"    pm.expect(pm.response.json()[0].pageCount).to.eql(224);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/Books?pageCount=224",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									],
+									"query": [
+										{
+											"key": "pageCount",
+											"value": "224"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve Book (By Price)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 200\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"// Test to ensure that the response follows a specific schema\r",
+											"const schema = {\r",
+											"    type: 'array',\r",
+											"    items: {\r",
+											"        type: 'object',\r",
+											"        properties: {\r",
+											"            id: { type: 'string' },\r",
+											"            title: { type: 'string' },\r",
+											"            author: { type: 'string' },\r",
+											"            pageCount: { type: 'number' },\r",
+											"            publishDate: { type: 'string' },\r",
+											"            price: {type: 'number'}\r",
+											"        },\r",
+											"        required: ['id', 'title', 'author', 'pageCount', 'publishDate', 'price']\r",
+											"    }\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified title is present in the response\r",
+											"pm.test(\"Book with title 'ساق البامبو' should be present in the response\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData[0].title).to.eql(\"ساق البامبو\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified id is present in the response\r",
+											"pm.test(\"Book with ID 26 should be present in the response\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData[0].id).to.eql(\"19\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified author is present in the response\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"    pm.expect(pm.response.json()[0].author).to.eql(\"سعود السنعوسي\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified publish date is present in the response\r",
+											"pm.test(\"Response body should contain correct publish date\", function () {\r",
+											"    pm.expect(pm.response.json()[0].publishDate).to.eql(\"2012\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified page count is present in the response\r",
+											"pm.test(\"Response body should contain correct page count\", function () {\r",
+											"    pm.expect(pm.response.json()[0].pageCount).to.eql(176);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified price is present in the response\r",
+											"pm.test(\"Response body should contain correct price\", function () {\r",
+											"    pm.expect(pm.response.json()[0].price).to.eql(120);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/Books?price=120",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									],
+									"query": [
+										{
+											"key": "price",
+											"value": "120"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve Book (By ID & Title)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 200\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 1.2 KB\", function () {\r",
+											"    var maxSizeInBytes = 2*1024; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"// Test to ensure that the response follows a specific schema\r",
+											"const schema = {\r",
+											"    type: 'array',\r",
+											"    items: {\r",
+											"        type: 'object',\r",
+											"        properties: {\r",
+											"            id: { type: 'string' },\r",
+											"            title: { type: 'string' },\r",
+											"            author: { type: 'string' },\r",
+											"            pageCount: { type: 'number' },\r",
+											"            publishDate: { type: 'string' },\r",
+											"            price:{type: 'number'}\r",
+											"        },\r",
+											"        required: ['id', 'title', 'author', 'pageCount', 'publishDate', 'price']\r",
+											"    }\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified title is present in the response\r",
+											"pm.test(\"Book with title 'Who Moved My Cheese?' should be present in the response\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData[0].title).to.eql(\"Who Moved My Cheese?\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified author is present in the response\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"    pm.expect(pm.response.json()[0].author).to.eql(\"Spencer Johnson\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified publish date is present in the response\r",
+											"pm.test(\"Response body should contain correct publish date\", function () {\r",
+											"    pm.expect(pm.response.json()[0].publishDate).to.eql(\"1998\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified  pageCount is present in the response\r",
+											"pm.test(\"Response body should contain correct  pageCount\", function () {\r",
+											"    pm.expect(pm.response.json()[0].pageCount).to.eql(96);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified price is present in the response\r",
+											"pm.test(\"Response body should contain correct  price\", function () {\r",
+											"    pm.expect(pm.response.json()[0].price).to.eql(60);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/Books?title=Who Moved My Cheese?&id=14",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "Who Moved My Cheese?"
+										},
+										{
+											"key": "id",
+											"value": "14"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative Scenario",
+					"item": [
+						{
+							"name": "Retrieve Book (By ID Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 404\r",
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"Not Found\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"Not Found\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/Books/id=255",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"id=255"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Update Book",
+			"item": [
+				{
+					"name": "Positive Scenario",
+					"item": [
+						{
+							"name": "Update Book (Put)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 200)\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 100ms\r",
+											"pm.test(\"Response time is less than 100ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book details\r",
+											"pm.test(\"Response contains updated book details\", function () {\r",
+											"    pm.expect(jsonData.id).to.eql(\"29\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book title\r",
+											"pm.test(\"Response contains updated book title\", function () {\r",
+											"    pm.expect(jsonData.title).to.eql(\"رحلتي من الشك إلي الإيمان\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book auther\r",
+											"pm.test(\"Response contains updated book author\", function () {\r",
+											"    pm.expect(jsonData.author).to.eql(\"مصطفى محمود\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book pageCount \r",
+											"pm.test(\"Response contains updated book pageCount\", function () {\r",
+											"    pm.expect(jsonData.pageCount).to.eql(127);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book publishDate\r",
+											"pm.test(\"Response contains updated book publishDate\", function () {\r",
+											"    pm.expect(jsonData.publishDate).to.eql(\"1970\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response follows a specific schema\r",
+											"var schema = {\r",
+											"    type: 'object',\r",
+											"    properties: {\r",
+											"        id: { type: 'string' },\r",
+											"        title: { type: 'string' },\r",
+											"        author: { type: 'string' },\r",
+											"        pageCount: { type: 'number' },\r",
+											"        publishDate: { type: 'string' }\r",
+											"    },\r",
+											"    required: ['id', 'title', 'author', 'pageCount', 'publishDate']\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified title is present in the response\r",
+											"pm.test(\"Book with title 'رحلتي من الشك إلي الإيمان' should be present in the response\", function () {\r",
+											"        const jsonData = pm.response.json();\r",
+											"    pm.expect(pm.response.json().title).to.eql(\"رحلتي من الشك إلي الإيمان\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified author is present in the response\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"   pm.expect(pm.response.json().author).to.eql(\"مصطفى محمود\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified publish date is present in the response\r",
+											"pm.test(\"Response body should contain correct publish date\", function () {\r",
+											"   pm.expect(pm.response.json().publishDate).to.eql(\"1970\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified page count is present in the response\r",
+											"pm.test(\"Response body should contain correct page count\", function () {\r",
+											"   pm.expect(pm.response.json().pageCount).to.eql(127);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"id\": \"27\",\r\n      \"title\": \"رحلتي من الشك إلي الإيمان\",\r\n      \"author\": \"مصطفى محمود\",\r\n      \"pageCount\": 127,\r\n      \"publishDate\": \"1970\",\r\n      \"price\":120\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books/{{BookID}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"{{BookID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Partial Update Book",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 200)\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 300ms\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book details\r",
+											"pm.test(\"Response contains updated book details\", function () {\r",
+											"    pm.expect(jsonData.id).to.eql(\"29\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book title\r",
+											"pm.test(\"Response contains updated book title\", function () {\r",
+											"    pm.expect(jsonData.title).to.eql(\"رحلتي من الشك إلي الإيمان\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book auther\r",
+											"pm.test(\"Response contains updated book author\", function () {\r",
+											"    pm.expect(jsonData.author).to.eql(\"مصطفى محمود\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book pageCount \r",
+											"pm.test(\"Response contains updated book pageCount\", function () {\r",
+											"    pm.expect(jsonData.pageCount).to.eql(350);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book publishDate\r",
+											"pm.test(\"Response contains updated book publishDate\", function () {\r",
+											"    pm.expect(jsonData.publishDate).to.eql(\"1970\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response follows a specific schema\r",
+											"var schema = {\r",
+											"    type: 'object',\r",
+											"    properties: {\r",
+											"        id: { type: 'string' },\r",
+											"        title: { type: 'string' },\r",
+											"        author: { type: 'string' },\r",
+											"        pageCount: { type: 'number' },\r",
+											"        publishDate: { type: 'string' }\r",
+											"    },\r",
+											"    required: ['id', 'title', 'author', 'pageCount', 'publishDate']\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified title is present in the response\r",
+											"pm.test(\"Book with title 'رحلتي من الشك إلي الإيمان' should be present in the response\", function () {\r",
+											"        const jsonData = pm.response.json();\r",
+											"    pm.expect(pm.response.json().title).to.eql(\"رحلتي من الشك إلي الإيمان\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified author is present in the response\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"   pm.expect(pm.response.json().author).to.eql(\"مصطفى محمود\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified publish date is present in the response\r",
+											"pm.test(\"Response body should contain correct publish date\", function () {\r",
+											"   pm.expect(pm.response.json().publishDate).to.eql(\"1970\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pageCount\":350\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books/{{BookID}}?pageCount=350",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"{{BookID}}"
+									],
+									"query": [
+										{
+											"key": "pageCount",
+											"value": "350"
+										},
+										{
+											"key": "title",
+											"value": "Gulliver's Travels",
+											"disabled": true
+										},
+										{
+											"key": "auther",
+											"value": "أحمد خالد توفيق",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Book (Patch)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 200)\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"OK\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book details\r",
+											"pm.test(\"Response contains updated book details\", function () {\r",
+											"    pm.expect(jsonData.id).to.eql(\"29\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book title\r",
+											"pm.test(\"Response contains updated book title\", function () {\r",
+											"    pm.expect(jsonData.title).to.eql(\"رحلتي من الشك إلي الإيمان\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book auther\r",
+											"pm.test(\"Response contains updated book author\", function () {\r",
+											"    pm.expect(jsonData.author).to.eql(\"مصطفى محمود\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book pageCount \r",
+											"pm.test(\"Response contains updated book pageCount\", function () {\r",
+											"    pm.expect(jsonData.pageCount).to.eql(127);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response contains the updated book publishDate\r",
+											"pm.test(\"Response contains updated book publishDate\", function () {\r",
+											"    pm.expect(jsonData.publishDate).to.eql(\"1970\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response follows a specific schema\r",
+											"var schema = {\r",
+											"    type: 'object',\r",
+											"    properties: {\r",
+											"        id: { type: 'string' },\r",
+											"        title: { type: 'string' },\r",
+											"        author: { type: 'string' },\r",
+											"        pageCount: { type: 'number' },\r",
+											"        publishDate: { type: 'string' }\r",
+											"    },\r",
+											"    required: ['id', 'title', 'author', 'pageCount', 'publishDate']\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified title is present in the response\r",
+											"pm.test(\"Book with title 'رحلتي من الشك إلي الإيمان' should be present in the response\", function () {\r",
+											"        const jsonData = pm.response.json();\r",
+											"    pm.expect(pm.response.json().title).to.eql(\"رحلتي من الشك إلي الإيمان\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified author is present in the response\r",
+											"pm.test(\"Response body should contain correct author\", function () {\r",
+											"   pm.expect(pm.response.json().author).to.eql(\"مصطفى محمود\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified publish date is present in the response\r",
+											"pm.test(\"Response body should contain correct publish date\", function () {\r",
+											"   pm.expect(pm.response.json().publishDate).to.eql(\"1970\");\r",
+											"});\r",
+											"\r",
+											"// Test to verify that the book with the specified page count is present in the response\r",
+											"pm.test(\"Response body should contain correct page count\", function () {\r",
+											"   pm.expect(pm.response.json().pageCount).to.eql(127);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"id\": \"27\",\r\n      \"title\": \"رحلتي من الشك إلي الإيمان\",\r\n      \"author\": \"مصطفى محمود\",\r\n      \"pageCount\": 127,\r\n      \"publishDate\": \"1970\"\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books/{{BookID}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"{{BookID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative Scenario",
+					"item": [
+						{
+							"name": "Update Book (Future Publish Date)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 400)\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"id\": \"27\",\r\n      \"title\": \"رحلتي من الشك إلي الإيمان\",\r\n      \"author\": \"مصطفى محمود\",\r\n      \"pageCount\": 127,\r\n      \"publishDate\": \"2050\",\r\n      \"price\":120\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books/{{BookID}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"{{BookID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Book (ID Already Exists)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 400)\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"id\": \"29\",\r\n      \"title\": \"رحلتي من الشك إلي الإيمان\",\r\n      \"author\": \"مصطفى محمود\",\r\n      \"pageCount\": 127,\r\n      \"publishDate\": \"1970\"\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books/{{BookID}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"{{BookID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Book (Negative Price)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 400)\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 200ms\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"id\": \"29\",\r\n      \"title\": \"رحلتي من الشك إلي الإيمان\",\r\n      \"author\": \"مصطفى محمود\",\r\n      \"pageCount\": 127,\r\n      \"publishDate\": \"1970\",\r\n      \"price\": -100\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books/{{BookID}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"{{BookID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Book (Price To Zero)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"//Test to ensure the request was successful (HTTP status 400)\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 1000ms\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 4.1 KB\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; \r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"id\": \"29\",\r\n      \"title\": \"رحلتي من الشك إلي الإيمان\",\r\n      \"author\": \"مصطفى محمود\",\r\n      \"pageCount\": 127,\r\n      \"publishDate\": \"1970\",\r\n      \"price\":0\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books/{{BookID}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"{{BookID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Delete Book",
+			"item": [
+				{
+					"name": "Positive Scenario",
+					"item": [
+						{
+							"name": "Delete Book (By ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 200\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"Ok\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 300ms\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 500 B\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//Test to verify Validate headers in the response\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"//Test to verify the response content type\r",
+											"pm.test(\"Content-Type is application/json\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response follows a specific schema\r",
+											"const schema = {\r",
+											"    type: 'object',\r",
+											"    properties: {\r",
+											"        id: { type: 'string' },\r",
+											"        title: { type: 'string' },\r",
+											"        author: { type: 'string' },\r",
+											"        pageCount: { type: 'number' },\r",
+											"        publishDate: { type: 'string' }\r",
+											"    },\r",
+											"    required: ['id', 'title', 'author', 'pageCount', 'publishDate']\r",
+											"};\r",
+											"pm.test('Response body should follow schema', function() {\r",
+											"    pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"//Test by ID to verify that the book was deleted correctly\r",
+											"pm.test(\"Book was deleted successfully\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.id).to.eql(\"29\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books/{{BookID}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"{{BookID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative Scenario",
+					"item": [
+						{
+							"name": "Delete Book (By ID Not Found)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Test to verify that the response status is 404\r",
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response status code contains the string \"Not Found\"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"Not Found\");\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response time is less than 300ms\r",
+											"pm.test(\"Response time is less than 300ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+											"});\r",
+											"\r",
+											"//Test to ensure that the response size is less than 500 B\r",
+											"pm.test(\"Response size is within 4.1 KB\", function () {\r",
+											"    var maxSizeInBytes = 500; // in bytes\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(maxSizeInBytes);\r",
+											"});\r",
+											"\r",
+											"//Test to verify that the response body is not empty\r",
+											"pm.test(\"Response body is not empty\", function () {\r",
+											"    pm.expect(pm.response.text()).not.eql(\"\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/Books/999",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"Books",
+										"999"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "activityid",
+			"value": ""
+		}
+	]
+}
